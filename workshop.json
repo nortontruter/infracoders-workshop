@@ -1,0 +1,91 @@
+{
+  "builders": [
+
+    {
+      "name": "desktop",
+      "type": "virtualbox-iso",
+
+      "guest_os_type": "RedHat_64",
+      "headless": false,
+
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "768"],
+        ["modifyvm", "{{.Name}}", "--cpus",   "1"],
+        ["modifyvm", "{{.Name}}", "--vram",   "10"]
+      ],
+
+      "hard_drive_interface": "sata",
+
+      "iso_url":           "d:/isos/CentOS-7.0-1406-x86_64-DVD.iso",
+      "iso_checksum":      "deadbeef",
+      "iso_checksum_type": "NONE",
+
+      "http_directory": "http",
+
+      "boot_wait": "12s",
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos-7.0-dvd-workshop_ks.cfg<enter><wait>"
+      ],
+
+      "ssh_username":     "root",
+      "ssh_password":     "workshop",
+      "ssh_port":         22,
+      "ssh_wait_timeout": "10000s",
+
+      "guest_additions_url":    "c:/Program Files/Oracle/VirtualBox/VBoxGuestAdditions.iso",
+      "guest_additions_sha256": "9f52e186d6c9407b2676d4b2ed1cdf96940ec129cc2bd92e54b24526271a9733",
+      "guest_additions_mode":   "attach",
+
+      "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p",
+
+      "vboxmanage_post": [
+        ["storagectl", "{{.Name}}", "--name", "IDE Controller", "--remove"]
+      ]
+    },
+
+    {
+      "name":          "aws",
+      "type":          "amazon-ebs",
+      "source_ami":    "ami-bd523087",
+      "region":        "ap-southeast-2",
+      "instance_type": "t2.micro",
+      "ssh_username":  "centos",
+      "ami_name":      "workshop {{timestamp}}"
+  }
+
+
+
+  ],
+
+  "provisioners": [
+
+    {
+      "only":        [ "desktop" ],
+      "type":        "file",
+      "source":      "workshop.key.pub",
+      "destination": "/tmp/workshop.key.pub"
+    },
+
+    {
+      "type":            "shell",
+      "execute_command": "{{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+      "scripts": [
+        "scripts/vagrant.sh"
+      ]
+    },
+
+
+    {
+      "only":    [ "desktop" ],
+      "type":    "shell",
+      "scripts": [
+        "scripts/vboxguest.sh"
+      ]
+    }
+
+  ],
+
+  "post-processors": [{
+    "type": "vagrant"
+  }]
+}

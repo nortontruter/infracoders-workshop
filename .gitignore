@@ -1,0 +1,5 @@
+/*.box
+.vagrant/
+/*.key*
+/*.pem
+aws.creds
