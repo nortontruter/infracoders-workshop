@@ -58,8 +58,8 @@ MEDIAREPO
     aws.ssh.username         = "centos"
     aws.ssh.pty              = true
 
-    aws.vm.box               = "workshop-aws"
-    aws.vm.box_url           = "packer_aws_aws.box"
+    aws.vm.box               = "dummy"
+    aws.vm.box_url           = "dummy.box"
 
     aws.vm.provider :aws do |aws, override|
 
@@ -79,10 +79,10 @@ MEDIAREPO
         'Ebs.DeleteOnTermination' => true
         } ]
     end
-
-   config.vm.provision "shell",
-      privileged: true,
-      inline: "yum install -y bind-utils"
- 
   end
+
+ config.vm.provision "shell",
+    privileged: true,
+    inline: "yum install -y bind-utils"
+ 
 end

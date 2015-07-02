@@ -60,7 +60,6 @@
   "provisioners": [
 
     {
-      "only":        [ "desktop" ],
       "type":        "file",
       "source":      "workshop.key.pub",
       "destination": "/tmp/workshop.key.pub"
@@ -73,7 +72,6 @@
         "scripts/vagrant.sh"
       ]
     },
-
 
     {
       "only":    [ "desktop" ],
