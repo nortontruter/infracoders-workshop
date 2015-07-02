@@ -50,6 +50,10 @@ MEDIAREPO
       path: "scripts/mediarepo.sh",
       args: "/dev/sr0"
 
+    desktop.vm.provision "shell",
+       privileged: true,
+       inline: "yum install -y bind-utils"
+ 
   end # :desktop
 
 
@@ -59,7 +63,7 @@ MEDIAREPO
     aws.ssh.pty              = true
 
     aws.vm.box               = "dummy"
-    aws.vm.box_url           = "dummy.box"
+    aws.vm.box_url           = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
 
     aws.vm.provider :aws do |aws, override|
 
@@ -79,10 +83,11 @@ MEDIAREPO
         'Ebs.DeleteOnTermination' => true
         } ]
     end
+
+    aws.vm.provision "shell",
+       privileged: true,
+       inline: "yum install -y bind-utils"
+ 
   end
 
- config.vm.provision "shell",
-    privileged: true,
-    inline: "yum install -y bind-utils"
- 
 end
