@@ -100,7 +100,20 @@ or if your sudo needs a password
 ```
 
 NB: Look for the AMI ID at the end of the `packer build` output.
+```
+...
+==> aws: Creating the AMI: workshop 1436193851
+    aws: AMI: ami-c791d5fd
+==> aws: Waiting for AMI to become ready...
+...
+Build 'aws' finished.
 
+==> Builds finished. The artifacts of successful builds are:
+--> aws: AMIs were created:
+
+ap-southeast-2: ami-c791d5fd
+
+```
 
 # Vagrant
 Vagrant needs this in the Vagrant file
