@@ -16,7 +16,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     desktop.ssh.username = "vagrant"
 
     desktop.vm.box       = "workshop-desktop"
-    desktop.vm.box_url   = "packer_desktop_virtualbox.box"
+    desktop.vm.box_url   = "builds/packer_desktop_virtualbox.box"
     desktop.vm.hostname  = :desktop
 
     desktop.vm.provider  :virtualbox do |vb|
@@ -85,7 +85,7 @@ MEDIAREPO
     end
 
     aws.vm.synced_folder ".", "/vagrant", type: "rsync",
-      rsync__exclude: [".git/","*.box"]
+      rsync__exclude: [".git/","packer_cache/", "builds/"]
 
     aws.vm.provision "shell",
        privileged: true,
