@@ -78,11 +78,14 @@ MEDIAREPO
       aws.keypair_name      = "workshop.key"
 
       aws.block_device_mapping = [ {
-        :DeviceName => "/dev/sda1",
-        :VirtualName => "ebs",
+        :DeviceName               => "/dev/sda1",
+        :VirtualName              => "ebs",
         'Ebs.DeleteOnTermination' => true
         } ]
     end
+
+    aws.vm.synced_folder ".", "/vagrant", type: "rsync",
+      rsync__exclude: [".git/","*.box"]
 
     aws.vm.provision "shell",
        privileged: true,
