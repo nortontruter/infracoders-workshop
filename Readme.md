@@ -43,9 +43,9 @@ Demonstration of Packer and Vagrant on
 ## Desktop virtualization
 * download ISO from centos.org
 
-For Desktop Virtualization, see Desktop.md
+For Desktop Virtualization, see [Desktop.md](Desktop.md)
 
-For Cloud Platform, see Cloud.md
+For Cloud Platform, see [Cloud.md](Cloud.md)
 
 # References and Links
 * https://github.com/chef/bento - an awesome source of reference implementations for LOTS of linux boxes
