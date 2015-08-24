@@ -18,7 +18,7 @@ Create an ssh key
 ```
 
 # Packer
-This workshop builds packer from ISO on VirtualBox. Packer needs this in the json:
+This workshop builds packer from ISO on VirtualBox. Packer needs this in the workshop.json:
 
 * `<builder>.iso_url`           - ISO location on your disk
 * `<builder>.iso_checksum_type` - "None" means we are ignoring it
@@ -32,6 +32,8 @@ The workshop.json Packer configuration implements the Vagrant box requirements, 
 * uploading the public key (`workshop.key.pub`)
 * setting the `vagrant` user's sudo access
 * installing VirtualBox Guest Additions. VirtualBox Guest Additions is required to implement shared folders and other useful Vagrant features
+    * <builder>.guest_additions_url    - ISO location on your disk
+    * <builder>.guest_additions_sha256 - calculate using `shasum -a 256 /path/to/VBoxGuestAdditions.iso`
 
 ## To build your Packer image:
 

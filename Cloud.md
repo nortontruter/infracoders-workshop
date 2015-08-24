@@ -34,7 +34,7 @@ done
 ```
 
 ## CentOS @ AWS
-* look for a public AMI e.g. Centos 7.0
+* look for a public AMI e.g. Centos 7
 * Accept license agreement on Market Place URL, e.g. http://aws.amazon.com/marketplace/pp?sku=aw0evgkw8e5c1q413zgy5pjce
 * now you can launch in AWS using vagrant
 
@@ -68,8 +68,8 @@ Packer creates (and deletes) its own:
 Packer needs this in the json file:
 
 * `<builder>.source_ami`          - AMI ID for the image you want to use
-* `<builder>.region`              - region where the instance will num
-* `<builder>.instance_type`       - instance type, e.g. t2.micro
+* `<builder>.region`              - region where the instance will run
+* `<builder>.instance_type`       - instance type, e.g. m3.medium
 * `<builder>.ssh_username`        - user that Packer will use to connect to the instance
 
 Cloud images typically don't allow root logon. Access is via a well-known user using your own keypair (the one Packer creates for you)
