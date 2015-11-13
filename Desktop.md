@@ -32,7 +32,6 @@ The workshop.json Packer configuration implements the Vagrant box requirements, 
 * uploading the public key (`workshop.key.pub`)
 * setting the `vagrant` user's sudo access
 * installing VirtualBox Guest Additions. VirtualBox Guest Additions is required to implement shared folders and other useful Vagrant features
-    * <builder>.guest_additions_url    - ISO location on your disk
     * <builder>.guest_additions_sha256 - calculate using `shasum -a 256 /path/to/VBoxGuestAdditions.iso`
 
 ## To build your Packer image:

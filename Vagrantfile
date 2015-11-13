@@ -70,7 +70,7 @@ MEDIAREPO
       aws.access_key_id     = ENV['AWS_ACCESS_KEY']
       aws.secret_access_key = ENV['AWS_SECRET_KEY']
 
-      aws.ami               = "ami-c791d5fd"
+      aws.ami               = "ami-ef5d17d5"
       aws.region            = "ap-southeast-2"
       aws.instance_type     = "t2.micro"
       aws.security_groups   = [ "workshop" ]

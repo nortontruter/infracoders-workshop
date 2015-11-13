@@ -1,4 +1,9 @@
 {
+
+  "variables": {
+    "guest_additions_sha256": "9f52e186d6c9407b2676d4b2ed1cdf96940ec129cc2bd92e54b24526271a9733"
+  },
+
   "builders": [
 
     {
@@ -32,8 +37,7 @@
       "ssh_port":         22,
       "ssh_wait_timeout": "10000s",
 
-      "guest_additions_url":    "c:/Program Files/Oracle/VirtualBox/VBoxGuestAdditions.iso",
-      "guest_additions_sha256": "9f52e186d6c9407b2676d4b2ed1cdf96940ec129cc2bd92e54b24526271a9733",
+      "guest_additions_sha256": "{{ user `guest_additions_sha256`}}",
       "guest_additions_mode":   "attach",
 
       "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p",
