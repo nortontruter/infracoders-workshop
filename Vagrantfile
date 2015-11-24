@@ -32,12 +32,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     # a file provisioner
-    desktop.vm.provision "file", source: "c7-media.repo", destination: "~/c7-media.repo"
+    desktop.vm.provision "file", source: "CentOS-Media.repo", destination: "~/CentOS-Media.repo"
 
     # an inline script provisioner using a multiline script varialbe
     $script = <<MEDIAREPO
       set -x
-      cp /home/vagrant/c7-media.repo /etc/yum.repos.d
+      cp /home/vagrant/CentOS-Media.repo /etc/yum.repos.d
 MEDIAREPO
 
     desktop.vm.provision "shell",

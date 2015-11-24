@@ -1,5 +1,0 @@
-[c7-media]
-name=CentOS-7 - Media
-baseurl=file:///media/CentOS
-enabled=1
-gpgcheck=0
