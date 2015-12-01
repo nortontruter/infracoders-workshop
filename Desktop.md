@@ -58,7 +58,7 @@ To see your box catalog:
 
 To manually add the box instead, you would do this:
 ```
-# vagrant box add --name packer-desktop-workshop packer_centos-7.0-dvd-workshop_virtualbox.box
+# vagrant box add --name desktop-workshop builds/packer_centos_virtualbox.box
 ```
 
 *NB: you don't need to do this.*
@@ -82,4 +82,4 @@ If you rebuild your image using Packer, you need to delete the box in your box c
 vagrant box remove desktop-workshop
 ```
 
-When you next `vagrant up desktop`, Vagrant will take your box file `packer-desktop-virtualbox.box` and add it to your local box catalog.
+When you next `vagrant up desktop`, Vagrant will take your box file `builds/packer_desktop_virtualbox.box` and add it to your local box catalog.
