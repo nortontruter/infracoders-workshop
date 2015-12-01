@@ -27,7 +27,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         '--port',        1,
         '--device',      0,
         '--type',        'dvddrive',
-        '--medium',      'd:/isos/CentOS-7.0-1406-x86_64-DVD.iso'
+        '--medium',      'd:/isos/CentOS-7-x86_64-DVD-1503-01.iso'
       ]
     end
 

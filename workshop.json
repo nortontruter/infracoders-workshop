@@ -21,7 +21,7 @@
 
       "hard_drive_interface": "sata",
 
-      "iso_url":           "d:/isos/CentOS-7.0-1406-x86_64-DVD.iso",
+      "iso_url":           "d:/isos/CentOS-7-x86_64-DVD-1503-01.iso",
       "iso_checksum":      "deadbeef",
       "iso_checksum_type": "NONE",
 
@@ -29,13 +29,14 @@
 
       "boot_wait": "12s",
       "boot_command": [
-        "<tab> rd.live.check=0 text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos-7.0-dvd-workshop_ks.cfg<enter><wait>"
+        "<tab> rd.live.check=0 text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos-7.1-dvd-workshop_ks.cfg<enter><wait>"
       ],
 
       "ssh_username":     "root",
       "ssh_password":     "workshop",
       "ssh_port":         22,
       "ssh_wait_timeout": "10000s",
+      "ssh_pty":          true,
 
       "guest_additions_sha256": "{{ user `guest_additions_sha256`}}",
       "guest_additions_mode":   "attach",
