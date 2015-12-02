@@ -1,0 +1,124 @@
+Packer + Vagrant Workshop - Additional Notes
+============================================
+
+# sudo, users and ttys
+
+The CentOS base AMI used for the Cloud demonstration does not allow root logon. You logon as the user 'centos'
+
+```
+{
+  ...
+  "builders": [
+    ...
+    {
+      "name":          "aws",
+      "type":          "amazon-ebs",
+      "ssh_username":  "centos",
+      ...
+```
+
+To run the vagrant.sh requires root access because it creates the vagrant user and modifies the /etc/sudoers, therefore the packer provisioner for the vagrant.sh script includes a sudo execute_command specification.
+
+
+```
+{
+  ...
+  "provisioners": [
+    ...
+    {
+      "type":            "shell",
+      "execute_command": "{{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+      "scripts": [
+        "scripts/vagrant.sh"
+      ]
+    },
+      ...
+```
+
+As the same provisioner is used for both the Cloud and Desktop configurations, the packer build for Desktop will also run the vagrant.sh via sudo.
+
+On the Desktop instance, sudo in requires a tty because the standard /etc/sudoers file created by the OS installer contains this:
+
+```
+Defaults requiretty
+```
+
+and our packer build fails like this when running the vagrant.sh script:
+
+```
+==> desktop: Provisioning with shell script: scripts/vagrant.sh
+    desktop: sudo: sorry, you must have a tty to run sudo
+```
+
+To accommodate this requirement, you can tell packer to use a pty for its ssh connection.
+
+```
+{
+  ...
+  "builders": [
+    ...
+    {
+      "name": "desktop",
+      "type": "virtualbox-iso",
+      ...
+      "ssh_pty":          true,
+      ...
+```
+
+To permanently disable the tty requirement, you can sed the /etc/sudoers file, which what is done by the vagrant.sh script. It is 'safe' to remove the requiretty - see https://bugzilla.redhat.com/show_bug.cgi?id=1020147#c7
+
+## Other implementation options
+Instead of using ssh_pty, the problem could be addresses in any number of ways.
+
+### modify vagrant.sh
+Modify the vagrant.sh script so that the sudo is included in the vagrant.sh script itself, e.g.
+
+```
+...
+sudo sed -i -e '/Defaults.*requiretty/s/^/#/' /etc/sudoers
+...
+```
+
+This can obscure the fact that you need sudo to perform the action. It also does not demonstrate the execute_command capabiliity of packer
+
+### use sudo only for the Cloud image
+As only the Cloud image requires sudo, you can create 2 separate provisioners and configure the Desktop provisioner to run without sudo (the Desktop image is accessed with root):
+
+```
+{
+  ...
+  "provisioners": [
+    ...
+    {
+      "only":            [ "aws" ],
+      "type":            "shell",
+      "execute_command": "{{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+      "scripts": [
+        "scripts/vagrant.sh"
+      ]
+    },
+
+    {
+      "only":            [ "desktop" ],
+      "type":            "shell",
+      "scripts": [
+        "scripts/vagrant.sh"
+      ]
+    },
+    ...
+```
+
+This can obscure the intent of this workshop.
+
+### remove requiretty during kickstart
+
+You can modify the /etc/sudoers file before packer provisioners takes control by adding this to the end of your kickstart file:
+
+```
+...
+%post
+sed -i -e '/Defaults.*requiretty/s/^/#/' /etc/sudoers
+%end
+```
+
+This may obscure the configuration of the requiretty as it is outside the scope of the packer provisioners.
