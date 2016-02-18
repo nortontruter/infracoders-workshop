@@ -59,7 +59,6 @@ MEDIAREPO
 
   config.vm.define :aws do |aws|
 
-    aws.ssh.username         = "centos"
     aws.ssh.pty              = true
 
     aws.vm.box               = "dummy"
