@@ -122,3 +122,73 @@ sed -i -e '/Defaults.*requiretty/s/^/#/' /etc/sudoers
 ```
 
 This may obscure the configuration of the requiretty as it is outside the scope of the packer provisioners.
+
+# Using the CentOS base AMI with vagrant only
+
+The CentOS base AMI can be used directly with vagrant without needing to first create an AMI with packer. You can write a Vagrantfile that creates an instance using the CentOS base AMI. Any and all the operations performed by packer during the creation of the custom AMI can be performed by vagrant instead while provisioning the instance from the base AMI.
+
+Vagrant uses sudo commands to accomplish a number of tasks on the AWS instance, such as any 'shell' provisioner which is 'privileged'
+
+```
+...
+config.vm.provision "shell",
+  privileged: true,
+...
+```
+
+The 'synced_folder' provisioner also uses sudo.
+
+```
+...
+config.vm.synced_folder ".", "/vagrant", type: "rsync",
+  rsync__exclude: [".git/","packer_cache/", "builds/"] 
+...
+```
+
+When vagrant tries to rsync the folder without sudo tty you will see this error
+
+```
+==> centos: Rsyncing folder: .../yourworkingdir/ => /vagrant
+==> centos:   - Exclude: [".vagrant/", ".git/", "packer_cache/", "builds/"]
+There was an error when attempting to rsync a synced folder.
+Please inspect the error message below for more info.
+
+Host path: .../yourworkingdir/
+Guest path: /vagrant
+Command: rsync --verbose --archive --delete -z --copy-links ... --rsync-path sudo rsync -e ssh -p 22 ...
+...
+sudo: sorry, you must have a tty to run sudo
+rsync: connection unexpectedly closed (0 bytes received so far) [sender]
+rsync error: error in rsync protocol data stream (code 12) at io.c(226) [sender=3.1.1]
+```
+
+Disabling the tty requirement on the instance must be done before vagrant provisioners interact with the instance. This can be done via cloud-init using the instance user-data.
+
+To set instance user-data , use the 'userdata' attribute of vagrant's 'aws' provider (note the spelling of the attribute)
+
+```
+...
+    centos.vm.provider :aws do |aws, override|
+      aws.user_data = File.read('userdata.yml')
+...
+```
+
+This is the equivalent of the packer instance user_data_file
+
+```
+{
+
+  "builders": [
+    {
+      "name":          "aws",
+      "type":          "amazon-ebs",
+      "user_data_file": "userdata.yml",
+      ...
+```
+
+You can try it out using the bonus-round Vagrantfile
+
+```
+# VAGRANT_VAGRANTFILE=bonus-round vagrant up centos
+# VAGRANT_VAGRANTFILE=bonus-round vagrant ssh centos
+```

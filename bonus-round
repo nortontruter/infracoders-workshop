@@ -1,0 +1,54 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+# vagrant 1.5.4 has working tags for config.vm.provision
+Vagrant.require_version ">= 1.5.4"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.ssh.private_key_path = "workshop.key"
+
+  # using base centos image
+  config.vm.define :centos do |centos|
+
+    centos.ssh.username     = "centos"
+    centos.ssh.pty          = true
+
+    centos.vm.box           = "dummy"
+    centos.vm.box_url       = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
+
+    centos.vm.provider :aws do |aws, override|
+
+      aws.access_key_id     = ENV['AWS_ACCESS_KEY']
+      aws.secret_access_key = ENV['AWS_SECRET_KEY']
+
+      aws.ami               = "ami-d38dc6e9"
+      aws.region            = "ap-southeast-2"
+      aws.instance_type     = "t2.micro"
+      aws.security_groups   = [ "workshop" ]
+
+      aws.keypair_name      = "workshop.key"
+
+      aws.block_device_mapping = [ {
+        :DeviceName               => "/dev/sda1",
+        :VirtualName              => "ebs",
+        'Ebs.DeleteOnTermination' => true
+        } ]
+
+      aws.user_data = File.read('userdata.yml')
+
+    end
+
+    centos.vm.synced_folder ".", "/vagrant", type: "rsync",
+      rsync__exclude: [".git/","packer_cache/", "builds/"]
+
+    centos.vm.provision "shell",
+       privileged: true,
+       inline: "yum install -y bind-utils"
+ 
+  end
+
+end
