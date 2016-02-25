@@ -81,6 +81,13 @@
 
     {
       "only":    [ "desktop" ],
+      "type":        "file",
+      "source":      "99-requiretty",
+      "destination": "/etc/sudoers.d/99-requiretty"
+    },
+
+    {
+      "only":    [ "desktop" ],
       "type":    "shell",
       "scripts": [
         "scripts/vboxguest.sh"

@@ -1,6 +1,6 @@
 #cloud-config
 write_files:
-- path: /etc/sudoers.d/999-requiretty
+- path: /etc/sudoers.d/99-requiretty
   permissions: 440
   content: |
-    Defaults:centos !requiretty
+    Defaults !requiretty
