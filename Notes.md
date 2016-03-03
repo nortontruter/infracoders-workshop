@@ -192,3 +192,46 @@ You can try it out using the bonus-round Vagrantfile
 # VAGRANT_VAGRANTFILE=bonus-round vagrant up centos
 # VAGRANT_VAGRANTFILE=bonus-round vagrant ssh centos
 ```
+
+# vagrant box file for AWS
+Packer can create a box file ("`post-processor ... type : vagrant`") which contains the AMI and region for the AMI. It should be possible for packer to create the box file using its vagrant post-processor and for vagrant with vagrant-aws to use that box file
+
+e.g. in workshop.json do this:
+```
+  "post-processors": [
+    {
+      "output": "builds/packer_{{.BuildName}}_{{.Provider}}.box",
+      "type":   "vagrant"
+    }
+  ]
+```
+
+and in Vagranfile do this:
+```
+...
+  config.vm.define :aws do |aws|
+
+    aws.vm.box               = "workshop-aws"
+    aws.vm.box_url           = "builds/packer_aws_aws.box"
+...
+```
+
+However, as at packer 0.9.0 and vagrant-aws 0.7.0, vagrant does not properly use the AMI and region definitions in the box file.
+
+Therefore it is necessary to do this:
+
+```
+...
+  config.vm.define :aws do |aws|
+
+    aws.vm.box               = "dummy"
+    aws.vm.box_url           = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
+
+    aws.vm.provider :aws do |aws, override|
+
+      aws.ami               = "ami-b4bc9ad7"
+      aws.region            = "ap-southeast-2"
+...
+```
+
+The built-in Vagrantfile template used by packer does not match what is expected by vagrant-aws. There is currently no bug raised with vagrant-aws or packer on this fault.
