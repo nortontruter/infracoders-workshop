@@ -97,7 +97,6 @@
   ],
 
   "post-processors": [{
-    "only":   [ "desktop" ],
     "output": "builds/packer_{{.BuildName}}_{{.Provider}}.box",
     "type":   "vagrant"
   }]

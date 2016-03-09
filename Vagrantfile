@@ -61,15 +61,13 @@ MEDIAREPO
 
     aws.ssh.pty              = true
 
-    aws.vm.box               = "dummy"
-    aws.vm.box_url           = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
+    aws.vm.box               = "workshop-aws"
 
     aws.vm.provider :aws do |aws, override|
 
       aws.access_key_id     = ENV['AWS_ACCESS_KEY']
       aws.secret_access_key = ENV['AWS_SECRET_KEY']
 
-      aws.ami               = "ami-93eec8f0"
       aws.region            = "ap-southeast-2"
       aws.instance_type     = "t2.micro"
       aws.security_groups   = [ "workshop" ]
