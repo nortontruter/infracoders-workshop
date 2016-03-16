@@ -194,7 +194,7 @@ You can try it out using the bonus-round Vagrantfile
 ```
 
 # vagrant box file for AWS
-Packer can create a box file ("`post-processor ... type : vagrant`") which contains the AMI and region for the AMI. It should be possible for packer to create the box file using its vagrant post-processor and for vagrant with vagrant-aws to use that box file
+Packer can create a box file ("`post-processor ... type : vagrant`") for the amazon-* builder which contains the AMI and region for the AMI. It should be possible for packer to create the box file using its vagrant post-processor and for vagrant with vagrant-aws to use that box file
 
 e.g. in workshop.json do this:
 ```
@@ -216,22 +216,52 @@ and in Vagranfile do this:
 ...
 ```
 
-However, as at packer 0.9.0 and vagrant-aws 0.7.0, vagrant does not properly use the AMI and region definitions in the box file.
+However, as as at packer 0.9.0 and vagrant-aws 0.7.0, vagrant does not properly use the AMI and region definitions in the box file. When the box does not exist vagrant does not first add the box and then use it (as happens with desktop virtualization). Instead vagrant fails like this:
 
-Therefore it is necessary to do this:
+```
+There are errors in the configuration of this machine. Please fix
+the following errors and try again:
+
+AWS Provider:
+* An AMI must be configured via "ami" (region: #{region})
+```
+
+This is because the `packer_aws_aws.box` Vagrantfile contains information associating the ami with the region like this
 
 ```
 ...
-  config.vm.define :aws do |aws|
+config.vm.provider "aws" do |aws|
+    
+  aws.region_config "ap-southeast-2", ami: "ami-f5fedf96"
+  
+end
+...
+```
 
-    aws.vm.box               = "dummy"
-    aws.vm.box_url           = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
+Therefore you either have to manually add the box file after the `packer build...` using `vagrant box add...`
 
-    aws.vm.provider :aws do |aws, override|
+```
+# vagrant box add --name workshop-aws builds/packer_aws_aws.box
+```
 
-      aws.ami               = "ami-b4bc9ad7"
+while selecting only the region in your Vagrantfile
+
+```
+...
+    config.vm.provider :aws do |aws, override|
       aws.region            = "ap-southeast-2"
 ...
 ```
 
-The built-in Vagrantfile template used by packer does not match what is expected by vagrant-aws. There is currently no bug raised with vagrant-aws or packer on this fault.
+OR you can use a dummy box while specifying the region and ami in your Vagrantfile
+
+
+```
+...
+    config.vm.box     = "dummy"
+    config.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
+    config.vm.provider :aws do |aws, override|
+      aws.region   = "ap-southeast-2"
+      aws.ami      = "ami-f5fedf96"
+...
+```
