@@ -77,6 +77,7 @@ MEDIAREPO
       aws.block_device_mapping = [ {
         :DeviceName               => "/dev/sda1",
         :VirtualName              => "ebs",
+        'Ebs.VolumeSize'          => 1,
         'Ebs.DeleteOnTermination' => true
         } ]
     end
