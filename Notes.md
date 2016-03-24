@@ -164,7 +164,7 @@ rsync error: error in rsync protocol data stream (code 12) at io.c(226) [sender=
 
 Disabling the tty requirement on the instance must be done before vagrant provisioners interact with the instance. This can be done via cloud-init using the instance user-data.
 
-To set instance user-data , use the 'userdata' attribute of vagrant's 'aws' provider (note the spelling of the attribute)
+To set instance user-data , use the 'user_data' attribute of vagrant's 'aws' provider (note the spelling of the attribute)
 
 ```
 ...
@@ -192,6 +192,8 @@ You can try it out using the bonus-round Vagrantfile
 # VAGRANT_VAGRANTFILE=bonus-round vagrant up centos
 # VAGRANT_VAGRANTFILE=bonus-round vagrant ssh centos
 ```
+
+Note that the username used for this configuration is 'centos' (see the centos.ssh.username). The bonus-round Vagrantfile does not create a 'vagrant' user. There is an inherent conflict between the user required to configure the box and the username you want to use when you run 'vagrant ssh'. You could create the 'vagrant' user and then use 'vagrant ssh ... -l vagrant' - left as an exercise for the reader.
 
 # vagrant box file for AWS
 Packer can create a box file ("`post-processor ... type : vagrant`") for the amazon-* builder which contains the AMI and region for the AMI. It should be possible for packer to create the box file using its vagrant post-processor and for vagrant with vagrant-aws to use that box file
