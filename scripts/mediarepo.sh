@@ -7,3 +7,4 @@ mount /media/CentOS
 yum --disablerepo=* --enablerepo=*media install -y yum-utils
 yum-config-manager --disable \* > /dev/null
 yum-config-manager --enable \*media > /dev/null
+yum makecache
