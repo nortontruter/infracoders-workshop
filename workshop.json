@@ -21,7 +21,7 @@
 
       "hard_drive_interface": "sata",
 
-      "iso_url":           "d:/isos/CentOS-7-x86_64-DVD-1503-01.iso",
+      "iso_url":           "d:/isos/CentOS-7-x86_64-DVD-1611.iso",
       "iso_checksum":      "deadbeef",
       "iso_checksum_type": "NONE",
 
