@@ -48,10 +48,20 @@
       ]
     },
 
+
+
     {
       "name":          "aws",
       "type":          "amazon-ebs",
-      "source_ami":    "ami-d38dc6e9",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name":                "*CentOS Linux 7 x86_64*",
+          "root-device-type":    "ebs"
+        },
+        "owners": ["679593333241"],
+        "most_recent": true
+      },
       "region":        "ap-southeast-2",
       "instance_type": "t2.micro",
       "ssh_username":  "centos",
