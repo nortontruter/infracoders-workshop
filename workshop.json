@@ -45,7 +45,9 @@
 
       "vboxmanage_post": [
         ["storagectl", "{{.Name}}", "--name", "IDE Controller", "--remove"]
-      ]
+      ],
+      "post_shutdown_delay": "30s"
+
     },
 
 
