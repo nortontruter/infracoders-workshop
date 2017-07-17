@@ -53,7 +53,7 @@
 
 
     {
-      "name":          "aws",
+      "name":          "cloud",
       "type":          "amazon-ebs",
       "source_ami_filter": {
         "filters": {

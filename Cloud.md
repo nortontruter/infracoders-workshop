@@ -99,42 +99,47 @@ or if your sudo needs a password
 
 ```
 # . aws.creds
-# packer build --only=aws workshop.json
+# packer build --only=cloud workshop.json
 ```
 
 NB: Look for the AMI ID at the end of the `packer build` output.
 ```
 ...
-==> aws: Creating the AMI: workshop 1436193851
-    aws: AMI: ami-c791d5fd
-==> aws: Waiting for AMI to become ready...
+==> cloud: Creating the AMI: workshop 1436193851
+    cloud: AMI: ami-c791d5fd
+==> cloud: Waiting for AMI to become ready...
 ...
-Build 'aws' finished.
+Build 'cloud' finished.
 
 ==> Builds finished. The artifacts of successful builds are:
---> aws: AMIs were created:
+--> cloud: AMIs were created:
 
 ap-southeast-2: ami-c791d5fd
 
 ```
 
 # Vagrant
-Vagrant needs this in the Vagrant file
+Vagrant needs to know this
 
-* `aws.region`                    - region where the instance will run
-* `aws.instance_type`             - instance type, e.g. t2.micro
-* `aws.security_groups`           - security group(s), you need one with SSH allowed, "workshop"
-* `aws.keypair_name`              - key pair name (SSH public key in AWS that is added to users), "workshop.key"
-* `override.ssh.private_key_path` - private key (SSH private key matching the public key in AWS)
+* `aws.ami`                     - ami-id naming the AMI you want to deploy
+* `aws.region`                  - region where the instance will run
+* `aws.instance_type`           - instance type - e.g. t2.micro
+* `aws.security_groups`         - security group(s) - you need one with SSH allowed, you created one earlier called "workshop"
+* `aws.keypair_name`            - key pair name (SSH public key in AWS that is added to users) - you uploaded one earlier called "workshop.key"
+* `config.ssh.private_key_path` - private key (SSH private key matching the public key in AWS) - you created one earlier with ssh-keygen
 
-The box created by Packer (builds/packer_aws_aws.box) contains information associating the ami with the region, you need to select the region for the instance.
+The box created by Packer (builds/packer_cloud_aws.box) contains information associating the ami-id you created with the region, you need to select the region for the instance.
 
-Your box configuration looks like this:
+Your instance configuration looks like this:
 ```
-    aws.vm.box               = "workshop-aws"
-    aws.vm.box_url           = "builds/packer_aws_aws.box"
-    aws.vm.provider :aws do |aws, override|
+  config.ssh.private_key_path = "workshop.key"
+  ...
+    cloud.vm.box               = "workshop-cloud"
+    cloud.vm.provider :aws do |aws|
       aws.region            = "ap-southeast-2"
+      aws.instance_type     = "t2.micro"
+      aws.security_groups   = [ "workshop" ]
+      aws.keypair_name      = "workshop.key"
 ```
 
 Using this method also requires you to add the box first before you run vagrant.
@@ -146,18 +151,7 @@ To see your box catalog:
 
 To manually add the box, you need to do this:
 ```
-# vagrant box add --name workshop-aws builds/packer_aws_aws.box
-```
-
-For vagrant-aws, you can use a 'dummy box'. A dummy box has no region or ami specification. Mitchell Hashimoto provides a dummy box in the source repository for his vagrant-aws plugin. You need to set the region and ami for your instance.
-
-Your box configuration looks like this:
-```
-    aws.vm.box     = "dummy"
-    aws.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
-    aws.vm.provider :aws do |aws, override|
-      aws.region   = "ap-southeast-2"
-      aws.ami      = "ami-f5fedf96"
+# vagrant box add --name workshop-cloud builds/packer_cloud_aws.box
 ```
 
 ## To launch and use your instance:
@@ -165,25 +159,20 @@ Your box configuration looks like this:
 **NB: Check if you have a packer_desktop_virtualbox.box file in the current directory. Delete it or Vagrant will upload this file (~400MB) to AWS. `config.vm.sync_folder.rsync__exclude` is currently broken**
 
 ```
-# vagrant up aws
-# vagrant ssh aws
+# vagrant up cloud
+# vagrant ssh cloud
 ```
 
 ## To delete your instance
 ```
-# vagrant destroy aws
+# vagrant destroy cloud
 ```
 
 # Rebuilding your image
 If you rebuild your image using Packer, you need to reload your box file
 ```
-# vagrant box remove workshop-aws
-# vagrant box add --name workshop-aws builds/packer_aws_aws.box
-```
-
-or update the `aws.ami` in your Vagrantfile
-```
-aws.ami = "yournewami"
+# vagrant box remove workshop-cloud
+# vagrant box add --name workshop-cloud builds/packer_cloud_aws.box
 ```
 
 When you next `vagrant up aws`, Vagrant will use your new image.

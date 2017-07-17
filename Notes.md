@@ -11,7 +11,7 @@ The CentOS base AMI used for the Cloud demonstration does not allow root logon. 
   "builders": [
     ...
     {
-      "name":          "aws",
+      "name":          "cloud",
       "type":          "amazon-ebs",
       "ssh_username":  "centos",
       ...
@@ -90,7 +90,7 @@ As only the Cloud image requires sudo, you can create 2 separate provisioners an
   "provisioners": [
     ...
     {
-      "only":            [ "aws" ],
+      "only":            [ "cloud" ],
       "type":            "shell",
       "execute_command": "{{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "scripts": [
@@ -168,7 +168,7 @@ To set instance user-data , use the 'user_data' attribute of vagrant's 'aws' pro
 
 ```
 ...
-    centos.vm.provider :aws do |aws, override|
+    centos.vm.provider :aws do |aws|
       aws.user_data = File.read('userdata.yml')
 ...
 ```
@@ -180,7 +180,7 @@ This is the equivalent of the packer instance user_data_file
 
   "builders": [
     {
-      "name":          "aws",
+      "name":          "cloud",
       "type":          "amazon-ebs",
       "user_data_file": "userdata.yml",
       ...
@@ -214,7 +214,7 @@ and in Vagranfile do this:
   config.vm.define :aws do |aws|
 
     aws.vm.box               = "workshop-aws"
-    aws.vm.box_url           = "builds/packer_aws_aws.box"
+    aws.vm.box_url           = "builds/packer_cloud_aws.box"
 ...
 ```
 
@@ -228,7 +228,7 @@ AWS Provider:
 * An AMI must be configured via "ami" (region: #{region})
 ```
 
-This is because the `packer_aws_aws.box` Vagrantfile contains information associating the ami with the region like this
+This is because the `packer_cloud_aws.box` Vagrantfile contains information associating the ami with the region like this
 
 ```
 ...
@@ -243,7 +243,7 @@ end
 Therefore you either have to manually add the box file after the `packer build...` using `vagrant box add...`
 
 ```
-# vagrant box add --name workshop-aws builds/packer_aws_aws.box
+# vagrant box add --name workshop-aws builds/packer_cloud_aws.box
 ```
 
 while selecting only the region in your Vagrantfile
@@ -255,14 +255,14 @@ while selecting only the region in your Vagrantfile
 ...
 ```
 
-OR you can use a dummy box while specifying the region and ami in your Vagrantfile
+OR you can use a dummy box while specifying both the region and ami in your Vagrantfile
 
 
 ```
 ...
     config.vm.box     = "dummy"
     config.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
-    config.vm.provider :aws do |aws, override|
+    config.vm.provider :aws do |aws|
       aws.region   = "ap-southeast-2"
       aws.ami      = "ami-f5fedf96"
 ...

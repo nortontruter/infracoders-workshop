@@ -57,13 +57,13 @@ MEDIAREPO
   end # :desktop
 
 
-  config.vm.define :aws do |aws|
+  config.vm.define :cloud do |cloud|
 
-    aws.ssh.pty              = true
+    cloud.ssh.pty              = true
 
-    aws.vm.box               = "workshop-aws"
+    cloud.vm.box               = "workshop-cloud"
 
-    aws.vm.provider :aws do |aws, override|
+    cloud.vm.provider :aws do |aws|
 
       aws.access_key_id     = ENV['AWS_ACCESS_KEY']
       aws.secret_access_key = ENV['AWS_SECRET_KEY']
@@ -81,10 +81,10 @@ MEDIAREPO
         } ]
     end
 
-    aws.vm.synced_folder ".", "/vagrant", type: "rsync",
-      rsync__exclude: [".git/","packer_cache/", "builds/"]
+    cloud.vm.synced_folder ".", "/vagrant", type: "rsync",
+      rsync__exclude: [".git/", "packer_cache/", "builds/", "aws.creds*"]
 
-    aws.vm.provision "shell",
+    cloud.vm.provision "shell",
        privileged: true,
        inline: "yum install -y bind-utils"
  
