@@ -82,12 +82,21 @@ MEDIAREPO
     end
 
     cloud.vm.synced_folder ".", "/vagrant", type: "rsync",
-      rsync__exclude: [".git/", "packer_cache/", "builds/", "aws.creds*"]
+      rsync__exclude: [".git/", "packer_cache/", "builds/"]
 
     cloud.vm.provision "shell",
        privileged: true,
        inline: "yum install -y bind-utils"
- 
+
+    cloud.vm.provision "shell",
+      privileged: true,
+      inline: "
+        curl https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -O
+        yum install -y unzip
+        unzip awscli-bundle.zip
+        ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+      "
+
   end
 
 end

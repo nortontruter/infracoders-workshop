@@ -175,6 +175,31 @@ If you rebuild your image using Packer, you need to reload your box file
 # vagrant box add --name workshop-cloud builds/packer_cloud_aws.box
 ```
 
-When you next `vagrant up aws`, Vagrant will use your new image.
+When you next `vagrant up cloud`, Vagrant will use your new image.
 
-**NB: you need to clean up the AMI in AWS yourself.**
+## To delete your image
+**When you are finished you need to clean up the AMI in AWS yourself** AWS charges you storage for the space your AMI takes.
+
+Images created using Packer remain until you deregister (delete) them. Images are not deregistered (deleted) when your instance is destroyed. You can `vagrant destroy cloud` your current instance and `vagrant up cloud` another, it uses the same image.
+
+For your convenience, the Vagrantfile installs the `awscli` onto the cloud instance and copies the current directory to `/vagrant` on your cloud instance. Once you are finished with this workshop, you can run
+
+```
+# /vagrant/cleanup-ami
+```
+
+to delete the image and its associated storage before you `vagrant destroy cloud`.
+
+Note that once you delete the AMI, `vagrant up cloud` will fail because the AMI no longer exists, e.g.
+
+```
+.../.vagrant.d/gems/2.4.3/gems/excon-0.61.0/lib/excon/middlewares/expects.rb:7:in `response_call': The image id 'ami-c791d5fd' does not exist (Fog::Compute::AWS::NotFound)
+```
+
+You should also
+
+```
+# vagrant box remove workshop-cloud
+```
+
+when you delete your AMI.
