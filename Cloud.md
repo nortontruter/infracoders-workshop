@@ -22,9 +22,10 @@ AWS_SECRET_KEY
 
 Simplest solution:
 
+* create a new access key in your account https://console.aws.amazon.com/iam/home?region=us-east-1#/security_credential
 * set credentials once in script (e.g. via ~/.bashrc or in ./aws.creds) and source that script in your environment
-* naturally used from Packer if it can't find builder 'access_key' parameter
-* in Vagrant set these keys in the AWS provider object
+* these environment variables are naturally used by Packer (see [Packer Amazon AMI Builder Authentication](https://www.packer.io/docs/builders/amazon.html#authentication))
+* in Vagrant set these keys in the AWS provider object (see [Vagrant AWS Plugin])
 ```
 config.vm.provider :aws do |aws, override|
   aws.access_key_id             = ENV['AWS_ACCESS_KEY']
@@ -32,6 +33,7 @@ config.vm.provider :aws do |aws, override|
   ...
 done
 ```
+
 
 ## CentOS @ AWS
 This workshop builds packer from a CentOS 7 AMI. You need to accept the license conditions for the AMI
@@ -53,7 +55,7 @@ Create an ssh key
 # ssh-keygen -t rsa -f workshop.key -N "" -C workshop.key
 ```
 
-Upload the workshop.key.pub to your AWS account and call it "workshop.key"
+Upload the workshop.key.pub to your AWS account and call it "workshop.key.pub"
 
 
 ## Security groups

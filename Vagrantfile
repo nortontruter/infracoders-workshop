@@ -72,7 +72,7 @@ MEDIAREPO
       aws.instance_type     = "t2.micro"
       aws.security_groups   = [ "workshop" ]
 
-      aws.keypair_name      = "workshop.key"
+      aws.keypair_name      = "workshop.key.pub"
 
       aws.block_device_mapping = [ {
         :DeviceName               => "/dev/sda1",

@@ -20,27 +20,17 @@ Demonstration of Packer and Vagrant on
 * run vagrant.msi
 * set PATH=...;.../Vagrant/bin
 
-## Virtualization platform
+## Cloud platform
+### AWS
+* sign up
+
+## Desktop virtualization
 ### Virtualbox
 * Download virtualbox.exe
 * run virtualbox.exe
 * set PATH=...;.../VirtualBox
 
-## VMware Workstation
-* Download VMware workstation msi
-* run vmware-workstation.exe
-* set PATH=...;.../VMware Workstation
-
-## others?
-* left as an exercise for the reader
-
-## Cloud platform
-### AWS
-* sign up
-* create access key
-* download access key
-
-## Desktop virtualization
+### OS Installation media
 * download ISO from centos.org
 
 # How To
